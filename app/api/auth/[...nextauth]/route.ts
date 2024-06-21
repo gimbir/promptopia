@@ -1,3 +1,4 @@
+// 'use client'
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 
@@ -14,13 +15,18 @@ const handler = NextAuth({
   callbacks: {
     async session({ session }) {
       // store the user id from MongoDB to session
-      const sessionUser = await User.findOne({ email: session.user.email });
-      session.user.id = sessionUser._id.toString();
-
+      const sessionUser = await User.findOne({ email: session?.user?.email });
+      session.user.id = sessionUser.id
       return session;
+    },async jwt({token, user}) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
     },
     async signIn({ account, profile, user, credentials }) {
       try {
+        debugger;
         await connectToDB();
 
         // check if user already exists

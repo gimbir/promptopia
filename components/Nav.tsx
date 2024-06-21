@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 
 const Nav = () => {
+  debugger;
   const { data: session } = useSession();
 
   const [providers, setProviders] = useState(null);
@@ -100,7 +101,7 @@ const Nav = () => {
                   My Profile
                 </Link>
                 <Link
-                  href='/profile'
+                  href='/create-prompt'
                   className='dropdown_link'
                   onClick={() => setToggleDropdown(false)}>
                   Create Prompt

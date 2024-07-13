@@ -15,11 +15,19 @@ const PromptCard = ({ prompt, handleTagClick, handleEdit }) => {
     };
 
     const handleDelete = async () => {
+        const hasConfirmed = confirm('Are you sure you want to delete this prompt?');
 
-        const response = await fetch(`/api/prompt/delete/${prompt._id}`);
-        const data = await response;
-        console.log(data);
-
+        if (hasConfirmed) {
+            try {
+                const response = await fetch(`/api/prompt/${prompt._id.toString()}`, { method: 'DELETE' });
+                const data = await response.json();
+                console.log(data);
+                location.reload();
+                
+            } catch (error) {
+                
+            }
+        }
     };
 
     return (

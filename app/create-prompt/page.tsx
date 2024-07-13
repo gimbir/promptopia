@@ -39,15 +39,16 @@ const CreatePrompt = () => {
         }
     };
 
-    return (session &&
+    return session.user ? (
         <Form
             type='Create'
             post={post}
             setPost={setPost}
             submitting={submitting}
             handleSubmit={createPrompt}
-        /> ? null : <div>Sign in to create a prompt</div>
-    );
+        />
+    )
+        : <div>Sign in to create a prompt</div>;
 };
 
 export default CreatePrompt;

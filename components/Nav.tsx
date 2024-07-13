@@ -4,9 +4,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
+import { Provider } from 'next-auth/providers/index';
 
 const Nav = () => {
-    debugger;
     const { data: session } = useSession();
 
     const [providers, setProviders] = useState(null);
@@ -69,8 +69,8 @@ const Nav = () => {
                             Object.values(providers).map((provider) => (
                                 <button
                                     type='button'
-                                    key={provider.name}
-                                    onClick={() => signIn(provider.id)}
+                                    key={(provider as Provider).name}
+                                    onClick={() => signIn((provider as Provider).id)}
                                     className='black_btn'>
                                     Sign In
                                 </button>
@@ -124,8 +124,8 @@ const Nav = () => {
                             Object.values(providers).map((provider) => (
                                 <button
                                     type='button'
-                                    key={provider.name}
-                                    onClick={() => signIn(provider.id)}
+                                    key={(provider as Provider).name}
+                                    onClick={() => signIn((provider as Provider).id)}
                                     className='black_btn'>
                                     Sign In
                                 </button>

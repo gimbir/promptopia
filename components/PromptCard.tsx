@@ -5,29 +5,15 @@ import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 
-const PromptCard = ({ prompt, handleTagClick, handleEdit }) => {
-    const [copied, setCopied] = useState("");
+const PromptCard = ({ prompt, handleTagClick, handleEdit, handleDelete }) => {
+    const [copied, setCopied] = useState('');
+    const { data: session } = useSession();
+    const pathName = usePathname();
 
     const handleCopy = () => {
         setCopied(prompt.prompt);
         navigator.clipboard.writeText(prompt.prompt);
-        setTimeout(() => setCopied(""), 3000);
-    };
-
-    const handleDelete = async () => {
-        const hasConfirmed = confirm('Are you sure you want to delete this prompt?');
-
-        if (hasConfirmed) {
-            try {
-                const response = await fetch(`/api/prompt/${prompt._id.toString()}`, { method: 'DELETE' });
-                const data = await response.json();
-                console.log(data);
-                location.reload();
-                
-            } catch (error) {
-                
-            }
-        }
+        setTimeout(() => setCopied(''), 3000);
     };
 
     return (
@@ -46,32 +32,17 @@ const PromptCard = ({ prompt, handleTagClick, handleEdit }) => {
 
                     {/* Username and Email */}
                     <div className='flex flex-col'>
-                        <h3 className='font-satoshi font-semibold text-gray-900'>
-                            {prompt.creator?.username}
-                        </h3>
-                        <p className='font-inter text-sm text-gray-500'>
-                            {prompt.creator?.email}
-                        </p>
+                        <h3 className='font-satoshi font-semibold text-gray-900'>{prompt.creator?.username}</h3>
+                        <p className='font-inter text-sm text-gray-500'>{prompt.creator?.email}</p>
                     </div>
                 </div>
 
                 {/* Copy Button */}
-                <div className='copy_btn' onClick={handleCopy}>
+                <div
+                    className='copy_btn'
+                    onClick={handleCopy}>
                     <Image
-                        src={copied === prompt.prompt
-                            ? '/assets/icons/tick.svg'
-                            : '/assets/icons/copy.svg'
-                        }
-                        alt='copy'
-                        width={20}
-                        height={20}
-                    />
-                </div>
-
-
-                <div className='copy_btn' onClick={handleDelete}>
-                    <Image
-                        src={'/assets/icons/menu.svg'}
+                        src={copied === prompt.prompt ? '/assets/icons/tick.svg' : '/assets/icons/copy.svg'}
                         alt='copy'
                         width={20}
                         height={20}
@@ -80,13 +51,31 @@ const PromptCard = ({ prompt, handleTagClick, handleEdit }) => {
             </div>
 
             {/* Prompt */}
-            <p className='my-4 font-satoshi text-sm text-gray-700'>
-                {prompt.prompt}
-            </p>
+            <p className='my-4 font-satoshi text-sm text-gray-700'>{prompt.prompt}</p>
 
             {/* Tags */}
-            <p className='font-inter text-sm blue_gradient cursor-pointer'
-                onClick={() => { handleTagClick && handleTagClick(prompt.tag); }}>#{prompt.tag}</p>
+            <p
+                className='font-inter text-sm blue_gradient cursor-pointer'
+                onClick={() => {
+                    handleTagClick && handleTagClick(prompt.tag);
+                }}>
+                #{prompt.tag}
+            </p>
+
+            {session?.user.id === prompt.creator._id && pathName === '/profile' && (
+                <div className='mt-5 flex-center gap-4 border-t border-gray-100 pt-3'>
+                    <p
+                        className='font-inter text-sm green_gradient cursor-pointer'
+                        onClick={handleEdit}>
+                        Edit
+                    </p>
+                    <p
+                        className='font-inter text-sm orange_gradient cursor-pointer'
+                        onClick={handleDelete}>
+                        Delete
+                    </p>
+                </div>
+            )}
         </div>
     );
 };
